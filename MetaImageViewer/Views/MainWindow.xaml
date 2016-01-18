@@ -4,9 +4,45 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MetaImageViewer"
+        xmlns:viewModel="clr-namespace:MetaImageViewer.ViewModels"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:b="clr-namespace:MetaImageViewer.Views.Behaviors"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        AllowDrop="True"
+        Drop="Window_Drop" PreviewDragOver="Window_PreviewDragOver"
+        Closing="Window_Closing"
+        Title="{Binding Image.Value.Name,FallbackValue='Meta Image Viewer'}" Height="600" Width="800"
+        Icon="/MetaImageViewer;component/Assets/Icons/1460_PaintPaletteFINAL.ico">
+    <Window.DataContext>
+        <viewModel:MainWindowViewModel/>
+    </Window.DataContext>
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <Button Content="Open" Command="{Binding OpenCommand}"/>
+            <TextBox Text="{Binding ZoomFactor.Value,Mode=TwoWay}" Width="100"/>
+            <Button Content="&lt;" Command="{Binding PrevCommand}" Width="30"/>
+            <Button Content="&gt;" Command="{Binding NextCommand}" Width="30"/>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1"
+                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                      PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                      PreviewKeyDown="ScrollViewer_PreviewKeyDown"
+                      MouseDoubleClick="ScrollViewer_MouseDoubleClick"
+                      Background="Gray"
+                      >
+            <i:Interaction.Behaviors>
+                <b:InertiaScrollViewerBehaviour x:Name="inertiaBehavior"/>
+            </i:Interaction.Behaviors>
+            <Image Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"
+                   Source="{Binding Image.Value.Image.Value}"/>
+        </ScrollViewer>
+
     </Grid>
 </Window>
