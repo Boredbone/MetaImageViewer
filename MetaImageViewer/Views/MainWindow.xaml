@@ -11,7 +11,7 @@
         AllowDrop="True"
         Drop="Window_Drop" PreviewDragOver="Window_PreviewDragOver"
         Closing="Window_Closing"
-        Title="{Binding Image.Value.Name,FallbackValue='Meta Image Viewer'}" Height="600" Width="800"
+        Title="{Binding Image.Value.Path,FallbackValue='Meta Image Viewer'}" Height="600" Width="800"
         Icon="/MetaImageViewer;component/Assets/Icons/1460_PaintPaletteFINAL.ico">
     <Window.DataContext>
         <viewModel:MainWindowViewModel/>

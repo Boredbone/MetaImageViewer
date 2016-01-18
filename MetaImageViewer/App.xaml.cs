@@ -20,13 +20,11 @@ namespace MetaImageViewer
 
         public App()
         {
-            
+            var assembly = Assembly.GetEntryAssembly();
+            var directory = System.IO.Path.GetDirectoryName(assembly.Location);
 
-            var myAssembly = Assembly.GetEntryAssembly();
-            var saveDirectory = System.IO.Path.GetDirectoryName(myAssembly.Location);
-
-            this.WindowPlacement = new RestoreWindowPlace.RestoreWindowPlace//("placement.config");
-                (saveDirectory + @"\placement.config");
+            this.WindowPlacement = new RestoreWindowPlace.RestoreWindowPlace
+                (directory + @"\placement.config");
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

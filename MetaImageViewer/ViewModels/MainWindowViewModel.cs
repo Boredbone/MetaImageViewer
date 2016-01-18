@@ -1,28 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using Boredbone.XamlTools.Extensions;
-using Boredbone.XamlTools.ViewModel;
-using MetaImageViewer.Tools;
-using Reactive.Bindings;
-using System.Reactive.Linq;
-using System.Reactive;
-using Reactive.Bindings.Extensions;
 using System.Windows;
 using Boredbone.Utility.Extensions;
+using Boredbone.XamlTools;
+using Boredbone.XamlTools.Extensions;
+using MetaImageViewer.Models;
 using Microsoft.Win32;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 
 namespace MetaImageViewer.ViewModels
 {
-    public class MainWindowViewModel : ViewModelBase
+    public class MainWindowViewModel : DisposableBase
     {
-
-
         public ReactiveProperty<ImageContainer> Image { get; }
         public ReactiveProperty<double> ZoomFactor { get; }
 
@@ -36,10 +31,16 @@ namespace MetaImageViewer.ViewModels
 
         public MainWindowViewModel()
         {
+            // loaded files
             this.Files = new ReactiveProperty<string[]>().AddTo(this.Disposables);
 
+            // image
             this.Image = new ReactiveProperty<ImageContainer>().AddTo(this.Disposables);
 
+            // dispose old image
+            this.Image.Pairwise().Subscribe(y => y.OldItem?.Dispose()).AddTo(this.Disposables);
+
+            // change index when the file list is changed
             this.CurrentIndex = this.Files
                 .Buffer(this.Image)
                 .Where(y => y.Count > 0)
@@ -51,35 +52,27 @@ namespace MetaImageViewer.ViewModels
                     {
                         return 0;
                     }
-                    var index = array.FindIndex(y => y.Equals(this.Image.Value?.Name));
+                    var index = array.FindIndex(y => y.Equals(this.Image.Value?.Path));
 
                     return (index >= 0) ? index : 0;
                 })
                 .ToReactiveProperty()
                 .AddTo(this.Disposables);
 
-
+            // reset ZoomFactor when the Image is changed
             this.ZoomFactor = this.Image
                 .Select(y => (y?.ZoomFactor.Value ?? 1.0) * 100)
                 .ToReactiveProperty(100.0)
                 .AddTo(this.Disposables);
 
-
-            //this.Image
-            //    .Zip(this.Image.Skip(1), (Old, New) => new { Old, New })
-            //    .Subscribe(a => a.Old?.Dispose());
-
-            this.Image.Pairwise().Subscribe(y => y.OldItem?.Dispose()).AddTo(this.Disposables);
-
+            // transfer ZoomFactor from view to model
             this.ZoomFactor
-                //.Throttle(TimeSpan.FromMilliseconds(200))
                 .Where(_ => this.Image.Value != null)
                 .ObserveOnUIDispatcher()
                 .Subscribe(y => this.Image.Value.ZoomFactor.Value = y / 100.0)
                 .AddTo(this.Disposables);
-
-            //this.Image.Scan((o, n) => o).Subscribe(o => o?.Dispose()).AddTo(this.Disposables);
-
+            
+            // file open
             this.OpenCommand = new ReactiveCommand()
                 .WithSubscribe(_ =>
                 {
@@ -97,15 +90,17 @@ namespace MetaImageViewer.ViewModels
                 .Select(y => y != null && y.Length > 1)
                 .ObserveOnUIDispatcher();
 
+            // previous file
             this.PrevCommand = fileSelectable
                 .ToReactiveCommand()
                 .WithSubscribe(_ => this.ChangeFile(-1), this.Disposables);
 
+            // next file
             this.NextCommand = fileSelectable
                 .ToReactiveCommand()
                 .WithSubscribe(_ => this.ChangeFile(1), this.Disposables);
 
-
+            // show requested image
             var launchArgs = ((App)Application.Current).LaunchArgs;
             if (launchArgs != null)
             {
@@ -113,6 +108,10 @@ namespace MetaImageViewer.ViewModels
             }
         }
 
+        /// <summary>
+        /// Change File
+        /// </summary>
+        /// <param name="increment"></param>
         private void ChangeFile(int increment)
         {
             var length = this.Files.Value.Length;
@@ -128,10 +127,12 @@ namespace MetaImageViewer.ViewModels
             index = index % length;
             this.CurrentIndex.Value = index;
             this.LoadImage(this.Files.Value[index]);
-            //this.Image.Value= this.Files.Value[index]
         }
 
-
+        /// <summary>
+        /// Load Files
+        /// </summary>
+        /// <param name="files"></param>
         public void LoadFiles(string[] files)
         {
             if (files == null || files.Length <= 0)
@@ -158,15 +159,18 @@ namespace MetaImageViewer.ViewModels
             this.LoadImage(path);
         }
 
+        /// <summary>
+        /// Load image from file
+        /// </summary>
+        /// <param name="path"></param>
         private void LoadImage(string path)
         {
-
             try
             {
                 var image = System.Drawing.Image.FromFile(path);
 
                 this.Image.Value
-                    = new ImageContainer(image) { Name = path, };
+                    = new ImageContainer(image) { Path = path, };
             }
             catch
             {
@@ -174,63 +178,30 @@ namespace MetaImageViewer.ViewModels
             }
         }
 
-
-        //private BitmapSource LoadFromFile(string path, double rate)
-        //{
-        //    using (var image = System.Drawing.Image.FromFile(path))
-        //    using (var canvas = new Bitmap((int)(image.Size.Width * rate), (int)(image.Size.Height * rate)))
-        //    using (var graphics = Graphics.FromImage(canvas))
-        //    {
-        //        graphics.DrawImage(image, 0, 0, (int)(image.Size.Width * rate), (int)(image.Size.Height * rate));
-        //        return canvas.ToWPFBitmap();
-        //    }
-        //}
-    }
-
-    public class ImageContainer : ViewModelBase
-    {
-        public ReactiveProperty<ImageSource> Image { get; }
-        public ReactiveProperty<double> ZoomFactor { get; }
-        private Image Source { get; }
-        public string Name { get; set; }
-
-
-        public ImageContainer(System.Drawing.Image image)
+        /// <summary>
+        /// Change ZoomFactor
+        /// </summary>
+        /// <param name="increment"></param>
+        public void Zoom(double increment)
         {
-            this.Source = image;
-            this.Source.AddTo(this.Disposables);
+            var current = this.ZoomFactor.Value;
 
-            this.ZoomFactor = new ReactiveProperty<double>(1.0).AddTo(this.Disposables);
-
-
-            this.Image = this.ZoomFactor
-                //.Throttle(TimeSpan.FromMilliseconds(200))
-                //.ObserveOnUIDispatcher()
-                .Select(_ => this.DecodeImage())
-                .ToReactiveProperty()
-                .AddTo(this.Disposables);
-        }
-
-        private ImageSource DecodeImage()
-        {
-            try
+            if (current > 0 && increment < 0)
             {
-                var width = (int)(this.Source.Width * this.ZoomFactor.Value);
-                var height = (int)(this.Source.Height * this.ZoomFactor.Value);
-
-
-                //using (var image = System.Drawing.Image.FromFile(path))
-                using (var canvas = new Bitmap(width, height))
-                using (var graphics = Graphics.FromImage(canvas))
+                while (current + increment <= 0)
                 {
-                    graphics.DrawImage(this.Source, 0, 0, width, height);
-                    return canvas.ToWPFBitmap();
+                    increment /= 10.0;
                 }
             }
-            catch
-            {
-                return null;
-            }
+            this.ZoomFactor.Value += increment;
+        }
+
+        /// <summary>
+        /// Set ZoomFactor to 100%
+        /// </summary>
+        public void ResetZoom()
+        {
+            this.ZoomFactor.Value = 100.0;
         }
     }
 }

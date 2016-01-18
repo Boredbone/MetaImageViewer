@@ -29,11 +29,8 @@ namespace MetaImageViewer.Views
             InitializeComponent();
             this.ViewModel = this.DataContext as MainWindowViewModel;
 
-
             var app = ((App)Application.Current);
             app.WindowPlacement.Register(this, "MainWindow");
-
-
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -68,24 +65,24 @@ namespace MetaImageViewer.Views
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             var delta = e.Delta / 12.0;
-
-            var current = this.ViewModel.ZoomFactor.Value;
-
-            if (current > 0 && delta < 0)
-            {
-                while (current + delta <= 0)
-                {
-                    delta /= 10.0;
-                }
-            }
-            this.ViewModel.ZoomFactor.Value += delta;
+            this.ViewModel.Zoom(delta);
+            //
+            //var current = this.ViewModel.ZoomFactor.Value;
+            //
+            //if (current > 0 && delta < 0)
+            //{
+            //    while (current + delta <= 0)
+            //    {
+            //        delta /= 10.0;
+            //    }
+            //}
+            //this.ViewModel.ZoomFactor.Value += delta;
             e.Handled = true;
         }
         
 
         private void ScrollViewer_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-
             switch (e.Key)
             {
                 case Key.Right:
@@ -99,7 +96,7 @@ namespace MetaImageViewer.Views
 
         private void ScrollViewer_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            this.ViewModel.ZoomFactor.Value = 100.0;
+            this.ViewModel.ResetZoom();
         }
     }
 }
