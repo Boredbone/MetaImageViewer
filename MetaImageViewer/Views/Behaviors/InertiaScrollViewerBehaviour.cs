@@ -19,7 +19,7 @@ namespace MetaImageViewer.Views.Behaviors
     /// <summary>
     /// ScrollViewerでマウス操作の時も慣性スクロールを行うためのビヘイビア
     /// </summary>
-    public class InertiaScrollViewerBehaviour : Behavior<ScrollViewer>,IDisposable
+    public class InertiaScrollViewerBehaviour : Behavior<ScrollViewer>, IDisposable
     {
         private Dictionary<string, IDisposable> Disposables { get; } = new Dictionary<string, IDisposable>();
 
@@ -141,7 +141,7 @@ namespace MetaImageViewer.Views.Behaviors
         {
             base.OnAttached();
 
-            
+
 
             //破棄処理を登録
             Observable.FromEvent<RoutedEventHandler, RoutedEventArgs>(
@@ -178,7 +178,7 @@ namespace MetaImageViewer.Views.Behaviors
                 .TakeUntil(mouseUp.Do(e => this.OnUp(e)))
                 .Finally(() =>
                 {
-                    if (this.AssociatedObject?.IsMouseCaptured==true)
+                    if (this.AssociatedObject?.IsMouseCaptured == true)
                     {
                         this.AssociatedObject.ReleaseMouseCapture();
                     }
@@ -238,9 +238,9 @@ namespace MetaImageViewer.Views.Behaviors
             }
 
             var point = (Vector)e.GetPosition(this.AssociatedObject);
-
             this.prevPosition = this.lastPosition;
             this.lastPosition = point;
+
 
             this.CurrentOffset = (Point)(this.startOffset - point + this.startPosition);
         }
@@ -303,9 +303,7 @@ namespace MetaImageViewer.Views.Behaviors
                 Storyboard.SetTargetProperty(storyboard, new PropertyPath(nameof(CurrentOffset)));
 
                 this.story = storyboard;
-
-                //this.isInartiaMoving = true;
-
+                
                 storyboard.Begin();
 
 

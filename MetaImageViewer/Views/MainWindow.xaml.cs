@@ -62,41 +62,37 @@ namespace MetaImageViewer.Views
             e.Handled = true;
         }
 
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            var focused = FocusManager.GetFocusedElement(this);
+            if (focused == null || !(focused is TextBox))
+            {
+                switch (e.Key)
+                {
+                    case Key.Right:
+                        this.ViewModel.NextCommand.Execute();
+                        e.Handled = true;
+                        break;
+                    case Key.Left:
+                        this.ViewModel.PrevCommand.Execute();
+                        e.Handled = true;
+                        break;
+                }
+            }
+        }
+
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             var delta = e.Delta / 12.0;
             this.ViewModel.Zoom(delta);
-            //
-            //var current = this.ViewModel.ZoomFactor.Value;
-            //
-            //if (current > 0 && delta < 0)
-            //{
-            //    while (current + delta <= 0)
-            //    {
-            //        delta /= 10.0;
-            //    }
-            //}
-            //this.ViewModel.ZoomFactor.Value += delta;
             e.Handled = true;
-        }
-        
-
-        private void ScrollViewer_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            switch (e.Key)
-            {
-                case Key.Right:
-                    this.ViewModel.NextCommand.Execute();
-                    break;
-                case Key.Left:
-                    this.ViewModel.PrevCommand.Execute();
-                    break;
-            }
         }
 
         private void ScrollViewer_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             this.ViewModel.ResetZoom();
         }
+
     }
 }
