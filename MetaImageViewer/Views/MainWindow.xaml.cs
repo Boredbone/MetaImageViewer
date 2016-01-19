@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MetaImageViewer.ViewModels;
+using Reactive.Bindings.Extensions;
 
 namespace MetaImageViewer.Views
 {
@@ -21,13 +23,20 @@ namespace MetaImageViewer.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-
         private MainWindowViewModel ViewModel { get; set; }
+        private CompositeDisposable Disposables { get; } 
 
         public MainWindow()
         {
             InitializeComponent();
-            this.ViewModel = this.DataContext as MainWindowViewModel;
+            this.Disposables = new CompositeDisposable();
+
+            this.ViewModel = (MainWindowViewModel)this.DataContext;
+            this.ViewModel.AddTo(this.Disposables);
+
+            Disposable.Create(() => this.DataContext = null).AddTo(this.Disposables);
+
+            this.inertiaBehavior.AddTo(this.Disposables);
 
             var app = ((App)Application.Current);
             app.WindowPlacement.Register(this, "MainWindow");
@@ -35,8 +44,7 @@ namespace MetaImageViewer.Views
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            (this.DataContext as IDisposable)?.Dispose();
-            this.DataContext = null;
+            this.Disposables.Dispose();
         }
 
 
@@ -51,14 +59,8 @@ namespace MetaImageViewer.Views
 
         private void Window_PreviewDragOver(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
-            {
-                e.Effects = DragDropEffects.Copy;
-            }
-            else
-            {
-                e.Effects = DragDropEffects.None;
-            }
+            e.Effects = (e.Data.GetDataPresent(DataFormats.FileDrop, true))
+                ? DragDropEffects.Copy : DragDropEffects.None;
             e.Handled = true;
         }
 
@@ -84,8 +86,7 @@ namespace MetaImageViewer.Views
 
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            var delta = e.Delta / 12.0;
-            this.ViewModel.Zoom(delta);
+            this.ViewModel.Zoom(e.Delta / 12.0);
             e.Handled = true;
         }
 
@@ -94,5 +95,8 @@ namespace MetaImageViewer.Views
             this.ViewModel.ResetZoom();
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+            => new AboutWindow() { Owner = this }.ShowDialog();
+        
     }
 }

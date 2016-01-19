@@ -76,9 +76,11 @@ namespace MetaImageViewer.ViewModels
             this.OpenCommand = new ReactiveCommand()
                 .WithSubscribe(_ =>
                 {
-                    var dialog = new OpenFileDialog();
-                    dialog.Filter = $"Windows Metafile(*.emf;*.wmf)|*.emf;*.wmf|All Files(*.*)|*.*";
-                    dialog.Multiselect = true;
+                    var dialog = new OpenFileDialog()
+                    {
+                        Filter = $"Windows Metafile(*.emf;*.wmf)|*.emf;*.wmf|All Files(*.*)|*.*",
+                        Multiselect = true,
+                    };
 
                     if (dialog.ShowDialog() == true)
                     {
@@ -99,6 +101,9 @@ namespace MetaImageViewer.ViewModels
             this.NextCommand = fileSelectable
                 .ToReactiveCommand()
                 .WithSubscribe(_ => this.ChangeFile(1), this.Disposables);
+
+            
+
 
             // show requested image
             var launchArgs = ((App)Application.Current).LaunchArgs;

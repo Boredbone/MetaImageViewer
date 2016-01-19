@@ -20,10 +20,26 @@ namespace MetaImageViewer.Models
         public ReactiveProperty<ImageSource> Image { get; }
         public ReactiveProperty<double> ZoomFactor { get; }
         private Image Source { get; }
-        public string Path { get; set; }
+
+        public string Name { get; private set; }
+
+        private string _fieldPath;
+        public string Path
+        {
+            get { return _fieldPath; }
+            set
+            {
+                if (_fieldPath != value)
+                {
+                    _fieldPath = value;
+                    this.Name = System.IO.Path.GetFileName(value);
+                }
+            }
+        }
 
 
-        public ImageContainer(System.Drawing.Image image)
+
+        public ImageContainer(Image image)
         {
             this.Source = image;
             this.Source.AddTo(this.Disposables);
