@@ -26,7 +26,7 @@
 
         <StackPanel Orientation="Horizontal" Grid.Row="0">
             <Button Content="Open" Command="{Binding OpenCommand}"/>
-            <TextBox Text="{Binding ZoomFactor.Value,Mode=TwoWay}" Width="100"/>
+            <TextBox Text="{Binding ZoomFactor.Value,Mode=TwoWay}" Width="100" Margin="50,0,0,0"/>
             <TextBlock Text="%" HorizontalAlignment="Left" VerticalAlignment="Center" Width="50"/>
             <Button Content="&lt;" Command="{Binding PrevCommand}" Width="30"/>
             <Button Content="&gt;" Command="{Binding NextCommand}" Width="30"/>

@@ -38,7 +38,7 @@ namespace MetaImageViewer.Views
 
             this.inertiaBehavior.AddTo(this.Disposables);
 
-            var app = ((App)Application.Current);
+            var app = (App)Application.Current;
             app.WindowPlacement.Register(this, "MainWindow");
         }
 

@@ -70,8 +70,8 @@
       <HintPath>..\packages\ReactiveProperty.2.4.2\lib\net45\ReactiveProperty.NET45.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RestoreWindowPlace, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestoreWindowPlace.1.1.0.0\lib\net45\RestoreWindowPlace.dll</HintPath>
+    <Reference Include="RestoreWindowPlace, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestoreWindowPlace.1.2.0.0\lib\net45\RestoreWindowPlace.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

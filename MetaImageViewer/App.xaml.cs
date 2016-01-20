@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using RestoreWindowPlace;
 
 namespace MetaImageViewer
 {
@@ -14,7 +15,7 @@ namespace MetaImageViewer
     /// </summary>
     public partial class App : Application
     {
-        public RestoreWindowPlace.RestoreWindowPlace WindowPlacement { get; }
+        public WindowPlace WindowPlacement { get; }
 
         public string[] LaunchArgs { get; private set; }
 
@@ -23,8 +24,7 @@ namespace MetaImageViewer
             var assembly = Assembly.GetEntryAssembly();
             var directory = System.IO.Path.GetDirectoryName(assembly.Location);
 
-            this.WindowPlacement = new RestoreWindowPlace.RestoreWindowPlace
-                (directory + @"\placement.config");
+            this.WindowPlacement = new WindowPlace(directory + @"\placement.config");
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
