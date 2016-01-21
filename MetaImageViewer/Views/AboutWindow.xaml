@@ -11,9 +11,17 @@
     <StackPanel>
         <TextBlock Text="Meta Image Viewer"/>
         <TextBlock Text="Boredbone"/>
-        <TextBlock Name="versionText" Text="1.0"/>
         <TextBlock>
-            <Hyperlink NavigateUri="http://www.google.com" RequestNavigate="Hyperlink_RequestNavigate">
+            <Run Text="Version "/>
+            <Run Name="versionText" Text="1.0"/>
+        </TextBlock>
+        <TextBlock>
+            <Run Text="Date "/>
+            <Run Name="buildDate" Text="1.0"/>
+        </TextBlock>
+        <TextBlock>
+            <Hyperlink NavigateUri="https://github.com/Boredbone/MetaImageViewer/blob/master/UsingLicense.md" 
+                       RequestNavigate="Hyperlink_RequestNavigate">
                 <TextBlock Text="License"/>
             </Hyperlink>
         </TextBlock>

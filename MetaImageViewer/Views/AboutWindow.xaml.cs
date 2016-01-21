@@ -23,8 +23,13 @@ namespace MetaImageViewer.Views
         public AboutWindow()
         {
             InitializeComponent();
-            var ver = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            var ver = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             this.versionText.Text = ver.ToString();
+
+            var buildDateTime = new DateTime(2000, 1, 1, 0, 0, 0);
+            buildDateTime = buildDateTime.AddDays(ver.Build);
+            buildDateTime = buildDateTime.AddSeconds(ver.Revision * 2);
+            this.buildDate.Text = buildDateTime.ToString();
         }
 
         private void Hyperlink_RequestNavigate
