@@ -28,6 +28,9 @@ namespace MetaImageViewer.ViewModels
         public ReactiveCommand PrevCommand { get; }
         public ReactiveCommand NextCommand { get; }
 
+        public ReactiveCommand LoadFilesCommand { get; }
+        public ReactiveCommand ResetZoomCommand { get; }
+
 
         public MainWindowViewModel()
         {
@@ -102,8 +105,20 @@ namespace MetaImageViewer.ViewModels
                 .ToReactiveCommand()
                 .WithSubscribe(_ => this.ChangeFile(1), this.Disposables);
 
-            
 
+            this.LoadFilesCommand = new ReactiveCommand()
+                .WithSubscribe(y =>
+                {
+                    var files = y as string[];
+                    if (files != null)
+                    {
+                        this.LoadFiles(files);
+                    }
+                }, this.Disposables);
+
+            // Set ZoomFactor to 100%
+            this.ResetZoomCommand = new ReactiveCommand()
+                .WithSubscribe(_ => this.ZoomFactor.Value = 100.0, this.Disposables);
 
             // show requested image
             var launchArgs = ((App)Application.Current).LaunchArgs;
@@ -201,13 +216,13 @@ namespace MetaImageViewer.ViewModels
             this.ZoomFactor.Value += increment;
         }
 
-        /// <summary>
-        /// Set ZoomFactor to 100%
-        /// </summary>
-        public void ResetZoom()
-        {
-            this.ZoomFactor.Value = 100.0;
-        }
+        ///// <summary>
+        ///// Set ZoomFactor to 100%
+        ///// </summary>
+        //public void ResetZoom()
+        //{
+        //    this.ZoomFactor.Value = 100.0;
+        //}
     }
 }
 

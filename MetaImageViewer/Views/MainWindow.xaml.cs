@@ -48,21 +48,21 @@ namespace MetaImageViewer.Views
         }
 
 
-        private void Window_Drop(object sender, DragEventArgs e)
-        {
-            string[] files = e.Data.GetData(DataFormats.FileDrop) as string[];
-            if (files != null)
-            {
-                this.ViewModel?.LoadFiles(files);
-            }
-        }
-
-        private void Window_PreviewDragOver(object sender, DragEventArgs e)
-        {
-            e.Effects = (e.Data.GetDataPresent(DataFormats.FileDrop, true))
-                ? DragDropEffects.Copy : DragDropEffects.None;
-            e.Handled = true;
-        }
+        //private void Window_Drop(object sender, DragEventArgs e)
+        //{
+        //    string[] files = e.Data.GetData(DataFormats.FileDrop) as string[];
+        //    if (files != null)
+        //    {
+        //        this.ViewModel?.LoadFiles(files);
+        //    }
+        //}
+        //
+        //private void Window_PreviewDragOver(object sender, DragEventArgs e)
+        //{
+        //    e.Effects = (e.Data.GetDataPresent(DataFormats.FileDrop, true))
+        //        ? DragDropEffects.Copy : DragDropEffects.None;
+        //    e.Handled = true;
+        //}
 
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -90,10 +90,10 @@ namespace MetaImageViewer.Views
             e.Handled = true;
         }
 
-        private void ScrollViewer_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            this.ViewModel.ResetZoom();
-        }
+        //private void ScrollViewer_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        //{
+        //    this.ViewModel.ResetZoom();
+        //}
 
         private void Button_Click(object sender, RoutedEventArgs e)
             => new AboutWindow() { Owner = this }.ShowDialog();

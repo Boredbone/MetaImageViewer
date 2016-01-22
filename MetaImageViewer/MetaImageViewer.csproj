@@ -132,6 +132,7 @@
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Behaviors\FileDropAttachedBehavior.cs" />
     <Compile Include="Views\Behaviors\InertiaScrollViewerBehaviour.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
