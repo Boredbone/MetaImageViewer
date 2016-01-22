@@ -14,9 +14,6 @@
         Title="{Binding Image.Value.Name,FallbackValue='Meta Image Viewer'}"
         Height="600" Width="800"
         Icon="/MetaImageViewer;component/Assets/Icons/1460_PaintPaletteFINAL.ico">
-    <!--
-        AllowDrop="True"
-        Drop="Window_Drop" PreviewDragOver="Window_PreviewDragOver"-->
     <Window.DataContext>
         <viewModel:MainWindowViewModel/>
     </Window.DataContext>
@@ -40,14 +37,11 @@
 
         <Button Content="About" Click="Button_Click" HorizontalAlignment="Right"/>
 
-
         <ScrollViewer Grid.Row="1"
                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                       HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                       PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                       Background="LightGray">
-            <!--
-                      MouseDoubleClick="ScrollViewer_MouseDoubleClick"-->
             <i:Interaction.Behaviors>
                 <b:InertiaScrollViewerBehaviour x:Name="inertiaBehavior"/>
             </i:Interaction.Behaviors>

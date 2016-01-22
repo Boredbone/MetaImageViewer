@@ -105,7 +105,7 @@ namespace MetaImageViewer.ViewModels
                 .ToReactiveCommand()
                 .WithSubscribe(_ => this.ChangeFile(1), this.Disposables);
 
-
+            // load files
             this.LoadFilesCommand = new ReactiveCommand()
                 .WithSubscribe(y =>
                 {
@@ -215,14 +215,7 @@ namespace MetaImageViewer.ViewModels
             }
             this.ZoomFactor.Value += increment;
         }
-
-        ///// <summary>
-        ///// Set ZoomFactor to 100%
-        ///// </summary>
-        //public void ResetZoom()
-        //{
-        //    this.ZoomFactor.Value = 100.0;
-        //}
+        
     }
 }
 

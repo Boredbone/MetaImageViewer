@@ -71,12 +71,7 @@ namespace MetaImageViewer.Views.Behaviors
             }
 
             var obj = e.Data.GetData(DataFormats.FileDrop);
-
-            //string[] files = e.Data.GetData(DataFormats.FileDrop) as string[];
-
-            // ドロップされたファイルパスを引数としてコマンド実行
             var cmd = GetCommand(element);
-            //var fileInfos = e.Data.GetData(DataFormats.FileDrop) as string[];
 
             if (obj != null && cmd.CanExecute(null))
             {
