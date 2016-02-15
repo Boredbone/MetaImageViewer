@@ -121,11 +121,11 @@ namespace MetaImageViewer.ViewModels
                 .WithSubscribe(_ => this.ZoomFactor.Value = 100.0, this.Disposables);
 
             // show requested image
-            var launchArgs = ((App)Application.Current).LaunchArgs;
-            if (launchArgs != null)
-            {
-                this.LoadFiles(launchArgs.Where(y => y.Length > 0).ToArray());
-            }
+            //var launchArgs = ((App)Application.Current).LaunchArgs;
+            //if (launchArgs != null)
+            //{
+            //    this.LoadFiles(launchArgs.Where(y => y.Length > 0).ToArray());
+            //}
         }
 
         /// <summary>

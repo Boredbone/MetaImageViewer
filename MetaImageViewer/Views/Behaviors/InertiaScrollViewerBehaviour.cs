@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using Windows.Foundation;
+//using Windows.Foundation;
 using Boredbone.Utility.Extensions;
 using Boredbone.XamlTools.Extensions;
 using System.Windows.Controls;

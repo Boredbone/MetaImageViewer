@@ -23,7 +23,7 @@ namespace MetaImageViewer.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private MainWindowViewModel ViewModel { get; set; }
+        public MainWindowViewModel ViewModel { get; }
         private CompositeDisposable Disposables { get; } 
 
         public MainWindow()
