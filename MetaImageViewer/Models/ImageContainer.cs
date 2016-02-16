@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace MetaImageViewer.Models
     {
         public ReactiveProperty<ImageSource> Image { get; }
         public ReactiveProperty<double> ZoomFactor { get; }
-        private Image Source { get; }
+        private Image Source { get; set; }
 
         public string Name { get; private set; }
 
@@ -50,6 +51,8 @@ namespace MetaImageViewer.Models
                 .Select(_ => this.DecodeImage())
                 .ToReactiveProperty()
                 .AddTo(this.Disposables);
+
+            Disposable.Create(() => this.Source = null).AddTo(this.Disposables);
         }
 
         private ImageSource DecodeImage()

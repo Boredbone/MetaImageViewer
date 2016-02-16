@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,7 +39,14 @@ namespace MetaImageViewer.ViewModels
             this.Files = new ReactiveProperty<string[]>().AddTo(this.Disposables);
 
             // image
-            this.Image = new ReactiveProperty<ImageContainer>().AddTo(this.Disposables);
+            this.Image = new ReactiveProperty<ImageContainer>();//.AddTo(this.Disposables);
+
+            Disposable.Create(() =>
+            {
+                this.Image.Value?.Dispose();
+                this.Image.Dispose();
+            })
+            .AddTo(this.Disposables);
 
             // dispose old image
             this.Image.Pairwise().Subscribe(y => y.OldItem?.Dispose()).AddTo(this.Disposables);

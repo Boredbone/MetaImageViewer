@@ -12,10 +12,15 @@
         Loaded="pageRoot_Loaded"
         Icon="/MetaImageViewer;component/Assets/Icons/1460_PaintPaletteFINAL.ico"
         Title="NotifyWindow" Height="300" Width="300">
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static local:NotifyWindow.OpenCommand}" Executed="CommandBinding_Executed" />
+    </Window.CommandBindings>
     <Grid>
-        <tb:TaskbarIcon x:Name="notifyIcon"
-                  IconSource="{Binding ElementName=pageRoot,Path=Icon}"
-                  ToolTipText="Meta Image Viewer">
+        <tb:TaskbarIcon
+            x:Name="notifyIcon"
+            IconSource="{Binding ElementName=pageRoot,Path=Icon}"
+            ToolTipText="Meta Image Viewer"
+            DoubleClickCommand="{x:Static local:NotifyWindow.OpenCommand}">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Open" Click="MenuItem_Click"/>

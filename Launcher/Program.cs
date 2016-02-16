@@ -29,10 +29,20 @@ namespace Launcher
                 var isServerRunning = true;
                 using (var mutex = new Mutex(false, mutexId))
                 {
-                    //ミューテックスの所有権を要求する
-                    if (mutex.WaitOne(0, false))
+                    try
                     {
-                        isServerRunning = false;
+                        //ミューテックスの所有権を要求する
+                        if (mutex.WaitOne(0, false))
+                        {
+                            //取得できた
+                            isServerRunning = false;
+                            mutex.ReleaseMutex();
+                            mutex.Close();
+                        }
+                    }
+                    catch (AbandonedMutexException)
+                    {
+                        //isServerRunning = false;
                     }
                 }
 
@@ -59,7 +69,7 @@ namespace Launcher
                     }
                 }
             }
-            catch (Exception e)
+            catch (NotImplementedException)//(Exception e)
             {
             }
         }

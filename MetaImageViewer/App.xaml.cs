@@ -62,7 +62,11 @@ namespace MetaImageViewer
 
                 this.server.LineReceived
                     .ObserveOnUIDispatcher()
-                    .Subscribe(file => this.ShowMainWindow(file), ex => this.Shutdown())
+                    .Subscribe(file => this.ShowMainWindow(file), ex =>
+                    {
+                        MessageBox.Show(ex.ToString());
+                        this.Shutdown();
+                    })
                     .AddTo(this.disposables);
 
                 this.server.Activate(mutexId, pipeId);

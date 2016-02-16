@@ -19,6 +19,8 @@ namespace MetaImageViewer.Views
     /// </summary>
     public partial class NotifyWindow : Window
     {
+        public static readonly ICommand OpenCommand = new RoutedCommand(nameof(OpenCommand), typeof(NotifyWindow));
+
         public NotifyWindow()
         {
             InitializeComponent();
@@ -37,6 +39,11 @@ namespace MetaImageViewer.Views
         private void pageRoot_Loaded(object sender, RoutedEventArgs e)
         {
             this.Hide();
+        }
+
+        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            ((App)Application.Current).ShowMainWindow(null);
         }
     }
 }

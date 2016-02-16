@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
@@ -20,6 +21,8 @@ namespace MetaImageViewer.Models
         private Subject<string> LineReceivedSubject { get; }
         public IObservable<string> LineReceived => this.LineReceivedSubject.AsObservable();
 
+        //private static readonly ConcurrentDictionary<string, Mutex> mutexDictionary
+        //    = new ConcurrentDictionary<string, Mutex>();
 
         public PipeServer()
         {
@@ -38,7 +41,15 @@ namespace MetaImageViewer.Models
                 }
             }, TaskContinuationOptions.OnlyOnFaulted);
 
-            Disposable.Create(() => tokenSource.Cancel()).AddTo(this.Disposables);
+            Disposable.Create(() =>
+            {
+                tokenSource.Cancel();
+                //if (mutexDictionary.ContainsKey(mutexId))
+                //{
+                //    Mutex m;
+                //    mutexDictionary.TryRemove(mutexId, out m);
+                //}
+            }).AddTo(this.Disposables);
         }
 
         private Task RunAsync(string mutexId, string pipeId,
@@ -58,37 +69,48 @@ namespace MetaImageViewer.Models
                             return;
                         }
 
-                        while (true)
+
+                        try
                         {
-                            cancellationToken.ThrowIfCancellationRequested();
+                            //mutexDictionary.TryAdd(mutexId, mutex);
 
-                            using (var pipeServer =
-                                new NamedPipeServerStream(pipeId, PipeDirection.In))
+                            while (true)
                             {
-                                // Wait for a client to connect
-                                await pipeServer.WaitForConnectionAsync(cancellationToken);
+                                cancellationToken.ThrowIfCancellationRequested();
 
-                                try
+                                using (var pipeServer =
+                                    new NamedPipeServerStream(pipeId, PipeDirection.In))
                                 {
-                                    using (var sr = new StreamReader(pipeServer))
+                                    // Wait for a client to connect
+                                    await pipeServer.WaitForConnectionAsync(cancellationToken);
+
+                                    try
                                     {
-                                        while (pipeServer.IsConnected)
+                                        using (var sr = new StreamReader(pipeServer))
                                         {
-                                            var text = sr.ReadLine();
-                                            if (text != null)
+                                            while (pipeServer.IsConnected)
                                             {
-                                                this.LineReceivedSubject.OnNext(text);
+                                                var text = sr.ReadLine();
+                                                if (text != null)
+                                                {
+                                                    this.LineReceivedSubject.OnNext(text);
+                                                }
+                                                cancellationToken.ThrowIfCancellationRequested();
                                             }
-                                            cancellationToken.ThrowIfCancellationRequested();
                                         }
                                     }
-                                }
-                                catch (IOException e)
-                                {
-                                    // Catch the IOException that is raised if the pipe is broken
-                                    // or disconnected.
+                                    catch (IOException e)
+                                    {
+                                        // Catch the IOException that is raised if the pipe is broken
+                                        // or disconnected.
+                                    }
                                 }
                             }
+                        }
+                        finally
+                        {
+                            mutex.ReleaseMutex();
+                            mutex.Close();
                         }
                     }
                 }
