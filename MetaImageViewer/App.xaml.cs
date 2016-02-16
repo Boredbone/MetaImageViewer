@@ -21,9 +21,6 @@ namespace MetaImageViewer
     {
         public WindowPlace WindowPlacement { get; }
 
-        //public string[] LaunchArgs { get; private set; }
-
-
         private const string mutexId = "ad6e4711-0ca9-4abe-b75e-0f5fcc876424";
         private const string pipeId = "bca7161c-20cd-4f98-b22b-6efc09b15ea6";
         private PipeServer server;
@@ -31,9 +28,6 @@ namespace MetaImageViewer
 
         public App()
         {
-            //var assembly = Assembly.GetEntryAssembly();
-            //var directory = System.IO.Path.GetDirectoryName(assembly.Location);
-
             var dir = System.AppDomain.CurrentDomain.BaseDirectory;
 
             this.WindowPlacement = new WindowPlace(dir + @"placement.config");
@@ -43,7 +37,7 @@ namespace MetaImageViewer
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             this.WindowPlacement.Save();
-            this.server.Dispose();
+            this.disposables.Dispose();
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
@@ -54,8 +48,6 @@ namespace MetaImageViewer
             {
                 foreach (var file in args)
                 {
-                    //this.LaunchArgs = args;
-
                     this.ShowMainWindow(file);
                 }
             }

@@ -119,13 +119,7 @@ namespace MetaImageViewer.ViewModels
             // Set ZoomFactor to 100%
             this.ResetZoomCommand = new ReactiveCommand()
                 .WithSubscribe(_ => this.ZoomFactor.Value = 100.0, this.Disposables);
-
-            // show requested image
-            //var launchArgs = ((App)Application.Current).LaunchArgs;
-            //if (launchArgs != null)
-            //{
-            //    this.LoadFiles(launchArgs.Where(y => y.Length > 0).ToArray());
-            //}
+            
         }
 
         /// <summary>

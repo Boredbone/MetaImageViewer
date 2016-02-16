@@ -35,35 +35,18 @@ namespace Launcher
                         isServerRunning = false;
                     }
                 }
-                //Console.WriteLine(isServerRunning.ToString());
-                //
-                //foreach(var l in args)
-                //{
-                //    Console.WriteLine(l);
-                //}
-                //Console.ReadLine();
 
                 if (!isServerRunning)
                 {
                     var dir = System.AppDomain.CurrentDomain.BaseDirectory;
-                    //var assembly = Assembly.GetEntryAssembly();
-                    //var directory = System.IO.Path.GetDirectoryName(assembly.Location);
                     var path = dir + serverPath;
-                    //Console.WriteLine(path);
-                    //Console.ReadLine();
                     var p = System.Diagnostics.Process.Start(path);
                 }
 
                 using (var pipeClient =
                     new NamedPipeClientStream(".", pipeId, PipeDirection.Out))
                 {
-
-
                     pipeClient.Connect();
-
-                    //Console.WriteLine("Connected to pipe.");
-                    //Console.WriteLine("There are currently {0} pipe server instances open.",
-                    //   pipeClient.NumberOfServerInstances);
 
                     // Read user input and send that to the client process.
                     using (var sw = new StreamWriter(pipeClient))
@@ -71,7 +54,6 @@ namespace Launcher
                         sw.AutoFlush = true;
                         foreach (var line in args)
                         {
-                            //Console.WriteLine(line);
                             sw.WriteLine(line);
                         }
                     }
@@ -79,7 +61,6 @@ namespace Launcher
             }
             catch (Exception e)
             {
-                //Console.WriteLine("ERROR: {0}", e.Message);
             }
         }
     }

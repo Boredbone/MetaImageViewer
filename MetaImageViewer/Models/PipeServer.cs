@@ -21,22 +21,9 @@ namespace MetaImageViewer.Models
         public IObservable<string> LineReceived => this.LineReceivedSubject.AsObservable();
 
 
-        public PipeServer()//string mutexId, string pipeId)
+        public PipeServer()
         {
-
             this.LineReceivedSubject = new Subject<string>().AddTo(this.Disposables);
-
-            /*
-            var tokenSource = new CancellationTokenSource();
-            var t = RunAsync(mutexId, pipeId, tokenSource).ContinueWith(y =>
-             {
-                 if (y.Exception != null)
-                 {
-                     this.LineReceivedSubject.OnError(y.Exception);
-                 }
-             }, TaskContinuationOptions.OnlyOnFaulted);
-
-            Disposable.Create(() => tokenSource.Cancel()).AddTo(this.Disposables);*/
         }
 
         public void Activate(string mutexId, string pipeId)
@@ -81,16 +68,6 @@ namespace MetaImageViewer.Models
                                 // Wait for a client to connect
                                 await pipeServer.WaitForConnectionAsync(cancellationToken);
 
-                                //while (pipeServer.IsConnected && pipeServer.Length > 0)
-                                //{
-                                //    byte[] result;
-                                //
-                                //    result = new byte[pipeServer.Length];
-                                //    await pipeServer.ReadAsync(result, 0, (int)pipeServer.Length, cancellationToken);
-                                //
-                                //    var text = System.Text.Encoding.ASCII.GetString(result);
-                                //}
-                                //Console.WriteLine("Client disconnected.");
                                 try
                                 {
                                     using (var sr = new StreamReader(pipeServer))
@@ -110,17 +87,7 @@ namespace MetaImageViewer.Models
                                 {
                                     // Catch the IOException that is raised if the pipe is broken
                                     // or disconnected.
-                                    //Console.WriteLine("ERROR1: {0}", e.ToString());
                                 }
-                                //// Read user input and send that to the client process.
-                                //using (var sw = new StreamWriter(pipeServer))
-                                //{
-                                //    sw.AutoFlush = true;
-                                //    Console.Write("Enter text: ");
-                                //    sw.WriteLine(Console.ReadLine());
-                                //}
-
-
                             }
                         }
                     }
