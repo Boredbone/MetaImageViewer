@@ -55,7 +55,7 @@ namespace MetaImageViewer
             {
                 //this.ShowMainWindow(null);
             }
-
+            
             if (this.server == null)
             {
                 this.server = new PipeServer().AddTo(this.disposables);

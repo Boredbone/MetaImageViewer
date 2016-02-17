@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
@@ -50,13 +51,16 @@ namespace Launcher
                 {
                     var dir = System.AppDomain.CurrentDomain.BaseDirectory;
                     var path = dir + serverPath;
-                    var p = System.Diagnostics.Process.Start(path);
+
+                    var psi = new ProcessStartInfo() { FileName = path, WorkingDirectory = dir };
+
+                    var p = System.Diagnostics.Process.Start(psi);
                 }
 
                 using (var pipeClient =
                     new NamedPipeClientStream(".", pipeId, PipeDirection.Out))
                 {
-                    pipeClient.Connect();
+                    pipeClient.Connect(10000);
 
                     // Read user input and send that to the client process.
                     using (var sw = new StreamWriter(pipeClient))
